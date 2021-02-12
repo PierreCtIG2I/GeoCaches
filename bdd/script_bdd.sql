@@ -1,3 +1,5 @@
+drop schema if exists geocaches;
+create schema geocaches;
 use geocaches;
 
 set FOREIGN_KEY_CHECKS = 0;
@@ -5,39 +7,41 @@ set FOREIGN_KEY_CHECKS = 0;
 drop table if exists utilisateur;
 create table utilisateur
 (
-	utilisateur_id int primary key auto_increment not null,
+	utilisateur_id varchar(50) primary key not null,
     pseudo varchar(30) unique not null,
-    description varchar(200)
+    description varchar(200),
+    photo varchar(20)
 );
 
 drop table if exists lieu;
 create table lieu 
 (
-	lieu_id int primary key auto_increment not null,
+	lieu_id varchar(50) primary key not null,
     description varchar(200) unique
 );
 
 drop table if exists cache;
 create table cache
 (
-	cache_id int primary key auto_increment not null,
+	cache_id varchar(50) primary key not null,
     coordonnees varchar(150) not null,
     description varchar(500) not null,
     type varchar(50) not null,
-    nature enum('physique', 'virtuelle') not null,
-    etat enum('activée', 'en cours d activation', 'fermée', 'suspendue') not null,
-    id_utilisateur int,
-    id_lieu int
+    nature enum('PHYSIQUE', 'VIRTUELLE') not null,
+    etat enum('ACTIVEE', 'EN_COURS_ACTIVATION', 'FERMEE', 'SUSPENDUE') not null,
+    id_utilisateur varchar(50),
+    id_lieu varchar(50)
 );
 
 drop table if exists visite;
 create table visite
 (
-	visite_id int primary key auto_increment not null,
+	visite_id varchar(50) primary key not null,
     date datetime not null,
     commentaire varchar(250),
-    id_cache int,
-    id_utilisateur int
+    photo varchar(20),
+    id_cache varchar(50),
+    id_utilisateur varchar(50)
 );
 
 alter table cache 
