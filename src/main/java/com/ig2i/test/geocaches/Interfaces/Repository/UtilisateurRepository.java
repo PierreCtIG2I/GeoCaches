@@ -12,8 +12,6 @@ public interface UtilisateurRepository {
 
     void saveUser(UtilisateurEntity user);
 
-    void saveAllUsers(List<UtilisateurEntity> users);
-
     void deleteUserById(String id);
 
     void deleteAllUsers();

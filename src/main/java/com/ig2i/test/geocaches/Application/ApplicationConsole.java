@@ -10,11 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -32,24 +30,10 @@ public class ApplicationConsole implements CommandLineRunner {
         String commande = "";
         System.out.println("Appuyez sur n'importe quelle touche pour commencer la session de test");
         scanner.nextLine();
-        while (!commande.equalsIgnoreCase("quitter")) {
+        while (!commande.equalsIgnoreCase("/q")) {
             System.out.println("\t======================================================"
-            + "\n Commandes de l'application : "
-            + "\t - get [cache|lieu|utilisateur|visite] [id || all]"
-            + "\t - update [cache|lieu|utilisateur|visite] [id]"
-            + "\t - delete [cache|lieu|utilisateur|visite] [id || all]"
-            + "\t - add [cache|lieu|utilisateur|visite] [valeurs_des_champs]"
-            + "\t\t - Template table cache : "
-            + "\t\t\t - add cache coordonnees;description;type;nature;etat;id_lieu;id_utilisateur"
-            + "\t\t\t Notes : * La champ \"nature\" doit contenir la valeur 'PHYSIQUE' ou 'VIRTUELLE'."
-            + "\t\t\t * La champ \"etat\" doit contenir la valeur 'ACTIVEE', 'EN_COURS_ACTIVATION', 'FERMEE' ou 'SUSPENDUE'."
-            + "\t\t - Template table lieu : "
-            + "\t\t\t - add lieu description"
-            + "\t\t - Template table utilisateur : "
-            + "\t\t\t - add user pseudo;description;photo"
-            + "\t\t - Template table visite : "
-            + "\t\t\t - add visite commentaire;photo;id_cache;id_utilisateur"
-            + "\t - Quitter |Termine la session de test|\n"
+            + "\n - /c |Commandes de l'application| "
+            + "\t - /q |Termine la session de test|\n"
             + "\t======================================================\n");
 
             System.out.println("Veuillez entrer une commande :");
@@ -57,7 +41,26 @@ public class ApplicationConsole implements CommandLineRunner {
             String[] commandeDivisee = commande.split(" ");
 
             switch (commandeDivisee[0]) {
-                case "get":
+                case "/c" :
+                    System.out.println("\t======================================================" +
+                            "\t - /g [cache|lieu|utilisateur|visite] [id || all]"
+                            + "\t - /getCacheParUtilisateur [id]"
+                            + "\t - /getVisiteParDate [date] |Date au format dd/mm/yyyy|"
+                            + "\t - /u [cache|lieu|utilisateur|visite] [id] [champ à update]"
+                            + "\t - /d [cache|lieu|utilisateur|visite] [id || all]"
+                            + "\t - /a [cache|lieu|utilisateur|visite] [valeurs_des_champs]"
+                            + "\t\t - Template table cache : "
+                            + "\t\t\t - /a cache coordonnees;description;type;nature;etat;id_lieu;id_utilisateur"
+                            + "\t\t\t Notes : * Le champ \"nature\" doit contenir la valeur 'PHYSIQUE' ou 'VIRTUELLE'."
+                            + "\t\t\t * Le champ \"etat\" doit contenir la valeur 'ACTIVEE', 'EN_COURS_ACTIVATION', 'FERMEE' ou 'SUSPENDUE'."
+                            + "\t\t - Template table lieu : "
+                            + "\t\t\t - /a lieu description"
+                            + "\t\t - Template table utilisateur : "
+                            + "\t\t\t - /a user pseudo;description;photo"
+                            + "\t\t - Template table visite : "
+                            + "\t\t\t - /a visite commentaire;photo;id_cache;id_utilisateur"
+                            + "\t======================================================\n");
+                case "/g":
                     if (commandeDivisee[1] != null) {
                         switch (commandeDivisee[1]) {
                             case "cache":
@@ -89,72 +92,52 @@ public class ApplicationConsole implements CommandLineRunner {
                                 }
                                 break;
                             default:
-                                System.out.printf("La table '%s' n'est pas présent en base %n", commandeDivisee[1]);
+                                System.out.printf("La table '%s' n'est pas présente en base %n", commandeDivisee[1]);
                         }
                     }
+                    System.out.println("Commande non conforme.");
                     break;
-                /*case "update":
-                    Faker faker = new Faker(new Locale("fr"));
-                    if (commandSplit[1] != null)
-                        switch (commandSplit[1]) {
+                case "/getCacheParUtilisateur":
+                    if (commandeDivisee[1] != null) {
+                        System.out.println(cacheService.findCachesByUtilisateur(commandeDivisee[1]));
+                    }
+                case "/getVisiteParDate":
+                    if (commandeDivisee[1] != null) {
+                        Date date = new SimpleDateFormat("dd/MM/yyyy").parse(commandeDivisee[1]);
+                        System.out.println(visiteService.findVisitesByDate(date));
+                    }
+                case "/u":
+                    if (commandeDivisee[1] != null && commandeDivisee.length == 4) {
+                        String valeur;
+                        switch (commandeDivisee[1]) {
                             case "cache":
-                                String[] fields = commandSplit[2].split(":");
-                                if (fields.length == 1) {
-                                    Cache c = cacheService.findCacheById(fields[0]);
-                                    if (c != null) {
-                                        c.setDescription(faker.lorem().fixedString(30));
-                                        System.out.println(cacheService.save(c));
-                                    }
-                                } else {
-                                    System.out.println("Vous n'avez pas renseigné assez de champs");
-                                    break;
-                                }
+                                System.out.println("Veuillez définir la valeur à insérer dans le champ " + commandeDivisee[3] + ":");
+                                valeur = scanner.nextLine();
+                                this.cacheService.updateCache(commandeDivisee[2], commandeDivisee[3], valeur);
                                 break;
                             case "visite":
-                                fields = commandSplit[2].split(":");
-                                if (fields.length == 1) {
-                                    Visite c = visiteService.findVisiteById(fields[0]);
-                                    if (c != null) {
-                                        c.setCommentaire(faker.lorem().fixedString(30));
-                                        System.out.println(visiteService.save(c));
-                                    }
-                                } else {
-                                    System.out.println("Vous n'avez pas renseigné assez de champs");
-                                    break;
-                                }
+                                System.out.println("Veuillez définir la valeur à insérer dans le champ " + commandeDivisee[3] + ":");
+                                valeur = scanner.nextLine();
+                                this.visiteService.updateVisite(commandeDivisee[2], commandeDivisee[3], valeur);
                                 break;
                             case "user":
-                                fields = commandSplit[2].split(":");
-                                if (fields.length == 1) {
-                                    User c = userService.findUserById(fields[0]);
-                                    if (c != null) {
-                                        c.setDescription(faker.lorem().fixedString(30));
-                                        System.out.println(userService.save(c));
-                                    }
-                                } else {
-                                    System.out.println("Vous n'avez pas renseigné assez de champs");
-                                    break;
-                                }
+                                System.out.println("Veuillez définir la valeur à insérer dans le champ " + commandeDivisee[3] + ":");
+                                valeur = scanner.nextLine();
+                                this.utilisateurService.updateUser(commandeDivisee[2], commandeDivisee[3], valeur);
                                 break;
                             case "lieu":
-                                fields = commandSplit[2].split(":");
-                                if (fields.length == 1) {
-                                    Lieu c = lieuService.findLieuById(fields[0]);
-                                    if (c != null) {
-                                        c.setNom(faker.address().city());
-                                        System.out.println(lieuService.save(c));
-                                    }
-                                } else {
-                                    System.out.println("Vous n'avez pas renseigné assez de champs");
-                                    break;
-                                }
+                                System.out.println("Veuillez définir la valeur à insérer dans le champ " + commandeDivisee[3] + ":");
+                                valeur = scanner.nextLine();
+                                this.lieuService.updateLieu(commandeDivisee[2], commandeDivisee[3], valeur);
                                 break;
                             default:
-                                System.out.printf("L'objet '%s' n'est pas reconnu %n", commandSplit[1]);
+                                System.out.printf("La table '%s' n'est pas présente en base %n", commandeDivisee[1]);
                                 throw new IllegalArgumentException("Objet invalide");
                         }
-                    break;*/
-                case "add":
+                    }
+                    System.out.println("Commande non conforme.");
+                    break;
+                case "/a":
                     if (commandeDivisee[1] != null) {
                         String id = UUID.randomUUID().toString();
                         switch (commandeDivisee[1]) {
@@ -200,12 +183,13 @@ public class ApplicationConsole implements CommandLineRunner {
                                 }
                                 break;
                             default:
-                                System.out.printf("La table '%s' n'est pas présent en base %n", commandeDivisee[1]);
+                                System.out.printf("La table '%s' n'est pas présente en base %n", commandeDivisee[1]);
                                 throw new IllegalArgumentException("Objet invalide");
                         }
+                        System.out.println("Commande non conforme.");
                         break;
                     }
-                case "delete":
+                case "/d":
                     if (commandeDivisee[1] != null)
                         switch (commandeDivisee[1]) {
                             case "cache":
@@ -245,10 +229,12 @@ public class ApplicationConsole implements CommandLineRunner {
                                 }
                                 break;
                             default:
-                                System.out.printf("L'objet '%s' n'est pas reconnu %n", commandeDivisee[1]);
+                                System.out.printf("La table '%s' n'est pas présente en base %n", commandeDivisee[1]);
+                                throw new IllegalArgumentException("Objet invalide");
                         }
+                    System.out.println("Commande non conforme.");
                     break;
-                case "quitter":
+                case "/q":
                     System.out.println("Fin de la sesion de test.");
                     break;
                 default:

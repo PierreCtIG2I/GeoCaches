@@ -1,11 +1,13 @@
 package com.ig2i.test.geocaches.BDD.MongoDB.Utilisateur;
 
+import com.ig2i.test.geocaches.BDD.MySQL.Cache.CacheEntity;
 import com.ig2i.test.geocaches.BDD.MySQL.Utilisateur.UtilisateurEntity;
 import com.ig2i.test.geocaches.Interfaces.Repository.UtilisateurRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Locale;
 
 @Repository
 @Profile("mongodb")
@@ -33,11 +35,6 @@ public class UtilisateurMongoRepositoryImpl implements UtilisateurRepository {
     }
 
     @Override
-    public void saveAllUsers(List<UtilisateurEntity> users) {
-        utilisateurMongoRepository.saveAll(users);
-    }
-
-    @Override
     public void deleteUserById(String id) {
         utilisateurMongoRepository.deleteById(id);
     }
@@ -45,5 +42,24 @@ public class UtilisateurMongoRepositoryImpl implements UtilisateurRepository {
     @Override
     public void deleteAllUsers() {
         utilisateurMongoRepository.deleteAll();
+    }
+
+    @Override
+    public void updateUser(String id, String champ, String valeur) {
+        UtilisateurEntity utilisateur = utilisateurMongoRepository.findById(id).orElse(null);
+        if (utilisateur != null) {
+            switch (champ) {
+                case "description":
+                    utilisateur.setDescription(valeur);
+                    this.saveUser(utilisateur);
+                    break;
+                case "photo":
+                    utilisateur.setPhoto(valeur);
+                    this.saveUser(utilisateur);
+                    break;
+                default:
+                    System.out.println("Cette colonne n'est pas modifiable ou n'existe pas");
+            }
+        }
     }
 }

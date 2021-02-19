@@ -11,11 +11,9 @@ public interface LieuRepository {
 
     void saveLieu(LieuEntity lieu);
 
-    void saveAllLieux(List<LieuEntity> lieux);
-
     void deleteLieuById(String id);
 
     void deleteAllLieux();
 
-    void updateLieu(String id, String valeur);
+    void updateLieu(String id, String champ, String valeur);
 }

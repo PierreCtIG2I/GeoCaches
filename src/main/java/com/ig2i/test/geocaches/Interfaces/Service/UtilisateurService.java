@@ -12,9 +12,9 @@ public interface UtilisateurService {
 
     void saveUser(UtilisateurEntity user);
 
-    void saveAllUsers(List<UtilisateurEntity> users);
-
     void deleteUserById(String id);
 
     void deleteAllUsers();
+
+    void updateUser(String id, String champ, String valeur);
 }

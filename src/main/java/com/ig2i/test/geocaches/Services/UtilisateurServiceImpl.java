@@ -32,11 +32,6 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
-    public void saveAllUsers(List<UtilisateurEntity> users) {
-        utilisateurRepository.saveAllUsers(users);
-    }
-
-    @Override
     public void deleteUserById(String id) {
         utilisateurRepository.deleteUserById(id);
     }
@@ -44,5 +39,10 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     @Override
     public void deleteAllUsers() {
         utilisateurRepository.deleteAllUsers();
+    }
+
+    @Override
+    public void updateUser(String id, String champ, String valeur) {
+        utilisateurRepository.updateUser(id, champ, valeur);
     }
 }

@@ -31,11 +31,6 @@ public class LieuMongoRepositoryImpl implements LieuRepository {
     }
 
     @Override
-    public void saveAllLieux(List<LieuEntity> lieux) {
-        lieuMongoRepository.saveAll(lieux);
-    }
-
-    @Override
     public void deleteLieuById(String id) {
         lieuMongoRepository.deleteById(id);
     }
@@ -43,5 +38,16 @@ public class LieuMongoRepositoryImpl implements LieuRepository {
     @Override
     public void deleteAllLieux() {
         lieuMongoRepository.deleteAll();
+    }
+
+    @Override
+    public void updateLieu(String id, String champ, String valeur) {
+        if (champ.equals("description")) {
+            LieuEntity lieu = this.findLieuById(id);
+            lieu.setDescription(valeur);
+            saveLieu(lieu);
+        } else {
+            System.out.println("La colonne spécifiée n'existe pas ou ne peut pas être changée.");
+        }
     }
 }

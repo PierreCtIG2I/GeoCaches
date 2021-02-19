@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,11 +28,6 @@ public class CacheRepositoryImpl implements CacheRepository {
     @Override
     public void saveCache(CacheEntity cache) {
         cacheJPARepository.save(cache);
-    }
-
-    @Override
-    public void saveAllCaches(List<CacheEntity> caches) {
-        cacheJPARepository.saveAll(caches);
     }
 
     @Override
@@ -85,5 +79,10 @@ public class CacheRepositoryImpl implements CacheRepository {
                     System.out.println("Cette colonne n'est pas modifiable ou n'existe pas");
             }
         }
+    }
+
+    @Override
+    public List<CacheEntity> findCachesByUtilisateur(String id) {
+        return cacheJPARepository.findCacheEntitiesByUtilisateur(id).orElse(null);
     }
 }

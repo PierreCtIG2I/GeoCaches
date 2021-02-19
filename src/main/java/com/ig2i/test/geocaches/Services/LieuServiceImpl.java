@@ -30,11 +30,6 @@ public class LieuServiceImpl implements LieuService {
     }
 
     @Override
-    public void saveAllLieux(List<LieuEntity> lieux) {
-        lieuRepository.saveAllLieux(lieux);
-    }
-
-    @Override
     public void deleteLieuById(String id) {
         lieuRepository.deleteLieuById(id);
     }
@@ -42,5 +37,10 @@ public class LieuServiceImpl implements LieuService {
     @Override
     public void deleteAllLieux() {
         lieuRepository.deleteAllLieux();
+    }
+
+    @Override
+    public void updateLieu(String id, String champ, String valeur) {
+        lieuRepository.updateLieu(id, champ, valeur);
     }
 }

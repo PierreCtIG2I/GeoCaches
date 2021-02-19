@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -30,11 +31,6 @@ public class VisiteRepositoryImpl implements VisiteRepository {
     }
 
     @Override
-    public void saveAllVisites(List<VisiteEntity> visites) {
-        visiteJPARepository.saveAll(visites);
-    }
-
-    @Override
     public void deleteVisiteById(String id) {
         visiteJPARepository.deleteById(id);
     }
@@ -42,5 +38,29 @@ public class VisiteRepositoryImpl implements VisiteRepository {
     @Override
     public void deleteAllVisites() {
         visiteJPARepository.deleteAll();
+    }
+
+    @Override
+    public void updateVisite(String id, String champ, String valeur) {
+        VisiteEntity visite = visiteJPARepository.findById(id).orElse(null);
+        if (visite != null) {
+            switch (champ) {
+                case "commentaire":
+                    visite.setCommentaire(valeur);
+                    this.saveVisite(visite);
+                    break;
+                case "photo":
+                    visite.setPhoto(valeur);
+                    this.saveVisite(visite);
+                    break;
+                default:
+                    System.out.println("Cette colonne n'est pas modifiable ou n'existe pas");
+            }
+        }
+    }
+
+    @Override
+    public List<VisiteEntity> findVisitesByDate(Date date) {
+        return visiteJPARepository.findVisiteEntitiesByDate(date).orElse(null);
     }
 }

@@ -32,11 +32,6 @@ public class UtilisateurRepositoryImpl implements UtilisateurRepository {
     }
 
     @Override
-    public void saveAllUsers(List<UtilisateurEntity> users) {
-        utilisateurJPARepository.saveAll(users);
-    }
-
-    @Override
     public void deleteUserById(String id) {
         utilisateurJPARepository.deleteById(id);
     }
@@ -44,5 +39,24 @@ public class UtilisateurRepositoryImpl implements UtilisateurRepository {
     @Override
     public void deleteAllUsers() {
         utilisateurJPARepository.deleteAll();
+    }
+
+    @Override
+    public void updateUser(String id, String champ, String valeur) {
+        UtilisateurEntity utilisateur = utilisateurJPARepository.findById(id).orElse(null);
+        if (utilisateur != null) {
+            switch (champ) {
+                case "description":
+                    utilisateur.setDescription(valeur);
+                    this.saveUser(utilisateur);
+                    break;
+                case "photo":
+                    utilisateur.setPhoto(valeur);
+                    this.saveUser(utilisateur);
+                    break;
+                default:
+                    System.out.println("Cette colonne n'est pas modifiable ou n'existe pas");
+            }
+        }
     }
 }

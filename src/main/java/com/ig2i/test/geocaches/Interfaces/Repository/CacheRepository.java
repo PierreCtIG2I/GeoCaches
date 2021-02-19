@@ -11,11 +11,11 @@ public interface CacheRepository {
 
     void saveCache(CacheEntity cache);
 
-    void saveAllCaches(List<CacheEntity> caches);
-
     void deleteCacheById(String id);
 
     void deleteAllCaches();
 
     void updateCache(String id, String champ, String valeur);
+
+    List<CacheEntity> findCachesByUtilisateur(String id);
 }

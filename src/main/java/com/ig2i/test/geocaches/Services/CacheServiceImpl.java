@@ -30,11 +30,6 @@ public class CacheServiceImpl implements CacheService {
     }
 
     @Override
-    public void saveAllCaches(List<CacheEntity> caches) {
-        cacheRepository.saveAllCaches(caches);
-    }
-
-    @Override
     public void deleteCacheById(String id) {
         cacheRepository.deleteCacheById(id);
     }
@@ -42,5 +37,15 @@ public class CacheServiceImpl implements CacheService {
     @Override
     public void deleteAllCaches() {
         cacheRepository.deleteAllCaches();
+    }
+
+    @Override
+    public void updateCache(String id, String champ, String valeur) {
+        cacheRepository.updateCache(id, champ, valeur);
+    }
+
+    @Override
+    public List<CacheEntity> findCachesByUtilisateur(String id) {
+        return cacheRepository.findCachesByUtilisateur(id);
     }
 }

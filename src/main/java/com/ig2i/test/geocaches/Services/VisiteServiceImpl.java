@@ -6,6 +6,7 @@ import com.ig2i.test.geocaches.Interfaces.Service.VisiteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,11 +31,6 @@ public class VisiteServiceImpl implements VisiteService {
     }
 
     @Override
-    public void saveAllVisites(List<VisiteEntity> visites) {
-        visiteRepository.saveAllVisites(visites);
-    }
-
-    @Override
     public void deleteVisiteById(String id) {
         visiteRepository.deleteVisiteById(id);
     }
@@ -42,5 +38,15 @@ public class VisiteServiceImpl implements VisiteService {
     @Override
     public void deleteAllVisites() {
         visiteRepository.deleteAllVisites();
+    }
+
+    @Override
+    public void updateVisite(String id, String champ, String valeur) {
+        visiteRepository.updateVisite(id, champ, valeur);
+    }
+
+    @Override
+    public List<VisiteEntity> findVisitesByDate(Date date) {
+        return visiteRepository.findVisitesByDate(date);
     }
 }
